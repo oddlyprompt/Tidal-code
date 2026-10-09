@@ -1,0 +1,31 @@
+{
+  "name": "tidal-cove",
+  "version": "1.0.0",
+  "description": "An explorable 3D resort waterpark with five rideable slides and rigged visitors",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node tests/server.cjs",
+    "test": "node tests/browser.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oddlyprompt/Tidal-code.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/oddlyprompt/Tidal-code/issues"
+  },
+  "homepage": "https://github.com/oddlyprompt/Tidal-code#readme",
+  "dependencies": {
+    "@playwright/test": "^1.64.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1",
+    "@sparticuz/chromium": "^153.0.0",
+    "esbuild": "^0.28.2"
+  }
+}

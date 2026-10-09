@@ -1,0 +1,117 @@
+[
+  {
+    "name": "Real touch joystick moves exploration player",
+    "pass": true,
+    "details": {
+      "axis": 0.972972972972973,
+      "before": 40,
+      "after": 35.913513513513635
+    }
+  },
+  {
+    "name": "Joystick release stops movement",
+    "pass": true
+  },
+  {
+    "name": "Touch swipe rotates view",
+    "pass": true
+  },
+  {
+    "name": "Gradual water entry activates swimming",
+    "pass": true
+  },
+  {
+    "name": "Hold-to-dive submerges camera",
+    "pass": true
+  },
+  {
+    "name": "Touch launches 0",
+    "pass": true
+  },
+  {
+    "name": "Player returns to swimming after ride 0",
+    "pass": true,
+    "details": {
+      "mode": "swim",
+      "position": [
+        -9.403820963488519,
+        -0.6,
+        -1.2577045124502633
+      ],
+      "completed": 1
+    }
+  },
+  {
+    "name": "Touch launches 1",
+    "pass": true
+  },
+  {
+    "name": "Player returns to swimming after ride 1",
+    "pass": true,
+    "details": {
+      "mode": "swim",
+      "position": [
+        -23.408838169806096,
+        -0.6,
+        -0.8421435543468658
+      ],
+      "completed": 2
+    }
+  },
+  {
+    "name": "Touch launches 2",
+    "pass": true
+  },
+  {
+    "name": "Player returns to swimming after ride 2",
+    "pass": true,
+    "details": {
+      "mode": "swim",
+      "position": [
+        -17.99756998217538,
+        -0.6,
+        -7.3553861410850745
+      ],
+      "completed": 3
+    }
+  },
+  {
+    "name": "Touch launches 3",
+    "pass": true
+  },
+  {
+    "name": "Player returns to swimming after ride 3",
+    "pass": true,
+    "details": {
+      "mode": "swim",
+      "position": [
+        -20.949764351626193,
+        -0.6,
+        7.754339815928291
+      ],
+      "completed": 4
+    }
+  },
+  {
+    "name": "Touch launches 4",
+    "pass": true
+  },
+  {
+    "name": "Player returns to swimming after ride 4",
+    "pass": true,
+    "details": {
+      "mode": "swim",
+      "position": [
+        19.558705734905327,
+        -0.6,
+        -39
+      ],
+      "completed": 5
+    }
+  },
+  {
+    "name": "No runtime or shader errors",
+    "pass": true,
+    "details": []
+  }
+]

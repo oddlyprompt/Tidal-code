@@ -1,0 +1,306 @@
+[
+  {
+    "profile": "desktop",
+    "status": "ready",
+    "errors": [],
+    "failed": [],
+    "qa": [
+      {
+        "name": "The Serpent complete ride",
+        "pass": true,
+        "seconds": 9.891666666666667,
+        "landing": [
+          -9.403820963488519,
+          -0.65,
+          -1.2577045124502633
+        ],
+        "pool": "landing",
+        "maxSpeed": 12.067542172254987
+      },
+      {
+        "name": "The Serpent lands in water",
+        "pass": true
+      },
+      {
+        "name": "Blackout complete ride",
+        "pass": true,
+        "seconds": 11.825,
+        "landing": [
+          -23.408838169806096,
+          -0.65,
+          -0.8421435543468658
+        ],
+        "pool": "landing",
+        "maxSpeed": 12.814208357848516
+      },
+      {
+        "name": "Blackout lands in water",
+        "pass": true
+      },
+      {
+        "name": "Vertigo complete ride",
+        "pass": true,
+        "seconds": 8.075,
+        "landing": [
+          -17.99756998217538,
+          -0.65,
+          -7.3553861410850745
+        ],
+        "pool": "landing",
+        "maxSpeed": 20.72131295419082
+      },
+      {
+        "name": "Vertigo lands in water",
+        "pass": true
+      },
+      {
+        "name": "The Vortex complete ride",
+        "pass": true,
+        "seconds": 11.983333333333333,
+        "landing": [
+          -20.949764351626193,
+          -0.65,
+          7.754339815928291
+        ],
+        "pool": "landing",
+        "maxSpeed": 14.333567095875924
+      },
+      {
+        "name": "The Vortex lands in water",
+        "pass": true
+      },
+      {
+        "name": "The Cannon complete ride",
+        "pass": true,
+        "seconds": 7.758333333333334,
+        "landing": [
+          19.558705734905327,
+          -0.65,
+          -39
+        ],
+        "pool": "cannon",
+        "maxSpeed": 19.970799013544838
+      },
+      {
+        "name": "The Cannon lands in water",
+        "pass": true
+      },
+      {
+        "name": "Cannon uses gravity flight",
+        "pass": true,
+        "airborneSeconds": 1.975
+      },
+      {
+        "name": "The Serpent staircase and deck route",
+        "pass": true,
+        "height": 14,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "Blackout staircase and deck route",
+        "pass": true,
+        "height": 16,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "Vertigo staircase and deck route",
+        "pass": true,
+        "height": 22,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "The Vortex staircase and deck route",
+        "pass": true,
+        "height": 18,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "The Cannon staircase and deck route",
+        "pass": true,
+        "height": 22,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "44 desktop / 24 mobile rigged visitors",
+        "pass": true
+      },
+      {
+        "name": "Every character has skeleton",
+        "pass": true
+      },
+      {
+        "name": "Beach smoothly reaches swimming depth",
+        "pass": true
+      }
+    ],
+    "metrics": {
+      "fps": 6.462333825701625,
+      "calls": 589,
+      "triangles": 1139959,
+      "position": [
+        8,
+        0,
+        40
+      ],
+      "mode": "walk",
+      "shaderErrors": []
+    }
+  },
+  {
+    "profile": "mobile",
+    "status": "ready",
+    "errors": [],
+    "failed": [],
+    "qa": [
+      {
+        "name": "The Serpent complete ride",
+        "pass": true,
+        "seconds": 9.891666666666667,
+        "landing": [
+          -9.403820963488519,
+          -0.65,
+          -1.2577045124502633
+        ],
+        "pool": "landing",
+        "maxSpeed": 12.067542172254987
+      },
+      {
+        "name": "The Serpent lands in water",
+        "pass": true
+      },
+      {
+        "name": "Blackout complete ride",
+        "pass": true,
+        "seconds": 11.825,
+        "landing": [
+          -23.408838169806096,
+          -0.65,
+          -0.8421435543468658
+        ],
+        "pool": "landing",
+        "maxSpeed": 12.814208357848516
+      },
+      {
+        "name": "Blackout lands in water",
+        "pass": true
+      },
+      {
+        "name": "Vertigo complete ride",
+        "pass": true,
+        "seconds": 8.075,
+        "landing": [
+          -17.99756998217538,
+          -0.65,
+          -7.3553861410850745
+        ],
+        "pool": "landing",
+        "maxSpeed": 20.72131295419082
+      },
+      {
+        "name": "Vertigo lands in water",
+        "pass": true
+      },
+      {
+        "name": "The Vortex complete ride",
+        "pass": true,
+        "seconds": 11.983333333333333,
+        "landing": [
+          -20.949764351626193,
+          -0.65,
+          7.754339815928291
+        ],
+        "pool": "landing",
+        "maxSpeed": 14.333567095875924
+      },
+      {
+        "name": "The Vortex lands in water",
+        "pass": true
+      },
+      {
+        "name": "The Cannon complete ride",
+        "pass": true,
+        "seconds": 7.758333333333334,
+        "landing": [
+          19.558705734905327,
+          -0.65,
+          -39
+        ],
+        "pool": "cannon",
+        "maxSpeed": 19.970799013544838
+      },
+      {
+        "name": "The Cannon lands in water",
+        "pass": true
+      },
+      {
+        "name": "Cannon uses gravity flight",
+        "pass": true,
+        "airborneSeconds": 1.975
+      },
+      {
+        "name": "The Serpent staircase and deck route",
+        "pass": true,
+        "height": 14,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "Blackout staircase and deck route",
+        "pass": true,
+        "height": 16,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "Vertigo staircase and deck route",
+        "pass": true,
+        "height": 22,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "The Vortex staircase and deck route",
+        "pass": true,
+        "height": 18,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "The Cannon staircase and deck route",
+        "pass": true,
+        "height": 22,
+        "maxStep": 0.2586206896551726,
+        "blockedSamples": 0
+      },
+      {
+        "name": "44 desktop / 24 mobile rigged visitors",
+        "pass": true
+      },
+      {
+        "name": "Every character has skeleton",
+        "pass": true
+      },
+      {
+        "name": "Beach smoothly reaches swimming depth",
+        "pass": true
+      }
+    ],
+    "metrics": {
+      "fps": 2.5,
+      "calls": 346,
+      "triangles": 849775,
+      "position": [
+        8,
+        0,
+        40
+      ],
+      "mode": "walk",
+      "shaderErrors": []
+    }
+  }
+]

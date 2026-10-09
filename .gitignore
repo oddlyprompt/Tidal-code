@@ -1,0 +1,4 @@
+node_modules/
+.openai/
+tests/output/
+assets/characters/human-base.glb
