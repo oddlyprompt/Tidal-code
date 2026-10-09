@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="theme-color" content="#0e3457"/>
+<title>Tidal Cove — Mobile Waterpark</title>
+<style>
+:root{--ink:#073c53;--cream:#f7f5e9;--aqua:#00d8cf;--coral:#fb765d}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,#8ac8ee 0%,#dcf8f1 82%,#95cdd2 100%);color:white;font-family:Outfit,'Arial',sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
+#app,#scene{position:fixed;inset:0;width:100%;height:100%}#scene canvas{display:block;touch-action:none}
+#vignette{position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(3,37,54,.22),transparent 25%,transparent 72%,rgba(4,44,64,.21));z-index:3}
+header{position:fixed;top:0;left:0;right:0;padding:clamp(16px,3vw,28px) clamp(18px,3vw,35px);z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;pointer-events:none}
+.logo{display:flex;align-items:center;gap:12px;text-shadow:0 1px 18px #043e5e99}.logo-icon{display:grid;place-items:center;width:44px;height:44px;border:1px solid #ffffff6b;border-radius:14px;background:#ffffff2b;backdrop-filter:blur(10px);font-size:27px}.brand{font-size:21px;font-weight:900;letter-spacing:-.9px;line-height:1}.sub{font-size:10px;letter-spacing:2.1px;font-weight:700;opacity:.95;margin-top:5px}.topright{display:flex;gap:9px;align-items:center}.chip{border-radius:100px;padding:9px 13px;color:white;font-size:12px;letter-spacing:.4px;background:#07384d72;backdrop-filter:blur(16px);border:1px solid #ffffff4b;font-weight:700;white-space:nowrap}
+#hero{position:fixed;z-index:5;left:clamp(18px,3vw,40px);top:25%;width:min(405px,calc(100% - 36px));pointer-events:none;text-shadow:0 2px 20px #0030459c;transition:transform .5s,opacity .5s}#eyebrow{font-size:11px;letter-spacing:3px;font-weight:800;color:#f9e9a9;text-transform:uppercase}h1{font-size:clamp(44px,6.2vw,78px);line-height:.94;letter-spacing:-3.6px;font-weight:900;margin:13px 0 17px;text-transform:uppercase}h1 span{color:#c0ffeb}#hero p{font-size:15px;line-height:1.55;max-width:330px;margin:0;font-weight:500;opacity:.96}body.playing #hero{transform:translateY(-20px);opacity:0}
+#bottom{position:fixed;z-index:8;bottom:clamp(18px,4vw,29px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:calc(100% - 22px);padding:9px;background:#0c3e57b9;border-radius:24px;border:1px solid #ffffff40;box-shadow:0 12px 42px #0b466240;backdrop-filter:blur(21px);-webkit-backdrop-filter:blur(21px)}
+.action{border:0;border-radius:17px;background:transparent;color:#e8ffff;display:flex;align-items:center;justify-content:center;gap:8px;font:700 13px Outfit,Arial,sans-serif;white-space:nowrap;padding:14px 17px;cursor:pointer;transition:background .2s,transform .15s}.action:active{transform:scale(.96)}.action:hover{background:#ffffff22}.action.primary{color:#08455b;background:#b6fce6}.action.primary:hover{background:#e4ffed}.action .symbol{font-size:19px}
+#rightpanel{position:fixed;right:25px;top:50%;transform:translateY(-50%);z-index:7;display:flex;flex-direction:column;gap:9px}.round{border:1px solid #ffffff63;color:white;background:#0b4963a8;backdrop-filter:blur(15px);border-radius:16px;min-width:54px;min-height:53px;cursor:pointer;box-shadow:0 4px 20px #003c4a17;display:grid;place-items:center;gap:0;font-size:20px}.round small{font:700 9px Outfit,Arial;letter-spacing:.3px}.round.on{background:#b6fce6;color:#064a5b}
+#walkHelp{position:fixed;bottom:116px;left:50%;transform:translateX(-50%);z-index:6;border:1px solid #ffffff66;border-radius:999px;padding:9px 15px;font-size:12px;font-weight:600;color:#fff;background:#00384f88;backdrop-filter:blur(10px);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .3s}body.moving #walkHelp{opacity:1}
+#pad{display:none;position:fixed;left:15px;bottom:117px;z-index:7;width:132px;height:132px;border-radius:999px;background:#0a536130;border:1px solid #ffffff44;backdrop-filter:blur(8px);touch-action:none}#padBase{position:absolute;inset:25px;border:1px solid #ffffff61;border-radius:50%;background:#083c536b}#stick{position:absolute;left:43px;top:43px;width:46px;height:46px;border-radius:100px;background:#c5fff0e0;box-shadow:0 3px 20px #095e6c55;transform:translate(0,0);pointer-events:none}body.moving #pad{display:block}
+#ridehud{position:fixed;z-index:6;top:120px;left:50%;transform:translateX(-50%);min-width:220px;text-align:center;display:none}body.riding #ridehud{display:block}.meter{margin-top:12px;height:7px;background:#ffffff77;border-radius:10px;overflow:hidden;border:1px solid #ffffff8b}.meter div{height:100%;width:0;background:#bcffeb;border-radius:10px}.rideTitle{font-weight:900;font-size:20px;text-shadow:0 2px 10px #023945}.rideSub{font-size:12px;font-weight:700;letter-spacing:1.5px;opacity:.95}
+#toast{position:fixed;top:83px;left:50%;transform:translateX(-50%) translateY(-8px);border-radius:16px;padding:10px 17px;background:#073c53b8;border:1px solid #ffffff80;color:white;font-size:12px;font-weight:700;backdrop-filter:blur(12px);z-index:10;opacity:0;transition:all .2s;pointer-events:none;white-space:nowrap}#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#loader{display:none;position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at 75% 30%,#58daca,#047895 65%,#053e65);display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column;gap:14px;transition:opacity .65s}.loadingWave{font-size:60px;animation:float 1.6s ease-in-out infinite alternate}@keyframes float{to{transform:translateY(-12px)}}#loader h2{font-size:29px;letter-spacing:-1px;margin:0}#loader p{margin:0 20px;max-width:320px;font-size:13px;line-height:1.6;opacity:.9}
+#footer{position:fixed;z-index:4;bottom:5px;right:14px;font-size:9px;opacity:.7;pointer-events:none;letter-spacing:.3px}
+@media(max-width:670px){header{padding:16px}.logo-icon{width:37px;height:37px;font-size:23px;border-radius:12px}.brand{font-size:17px}.sub{font-size:8px;letter-spacing:1.5px}.topright .chip:nth-child(1){display:none}.chip{font-size:10px;padding:8px 10px}#hero{top:23%;left:19px}h1{font-size:49px;letter-spacing:-2.5px}#hero p{font-size:12px;max-width:260px}#bottom{bottom:17px;padding:6px;border-radius:20px;gap:0;min-width:calc(100% - 16px);justify-content:space-between}.action{padding:11px 9px;font-size:11px;border-radius:13px;gap:4px}.action .symbol{font-size:17px}#rightpanel{top:41%;right:10px}.round{min-width:43px;min-height:44px;border-radius:12px;font-size:17px}.round small{font-size:8px}#pad{left:14px;bottom:101px;width:115px;height:115px}#padBase{inset:22px}#stick{left:37px;top:37px;width:40px;height:40px}#walkHelp{bottom:96px;font-size:10px;max-width:185px;white-space:normal;text-align:center;left:auto;right:9px;transform:none}#ridehud{top:89px}#footer{display:none}}
+#staticFallback{position:fixed;z-index:25;inset:0;background:linear-gradient(145deg,#096f96,#08445f);color:white;display:flex;align-items:center;justify-content:center;padding:26px;text-align:center}#staticFallback .fallbackCard{max-width:390px;border:1px solid #ffffff55;background:#ffffff16;border-radius:24px;padding:30px 24px;box-shadow:0 20px 90px #00253a44}#staticFallback .fallbackCard b{display:block;font-size:27px;letter-spacing:-1px;margin:12px 0}#staticFallback .fallbackCard p{font-size:15px;line-height:1.55;color:#e3f9ff}#staticFallback .fallbackCard small{display:block;margin-top:15px;line-height:1.5;color:#ceefee}
+</style>
+</head>
+<body>
+<div id="app"><div id="scene"></div><div id="vignette"></div></div>
+<div id="staticFallback"><div class="fallbackCard"><div style="font-size:50px">🌊</div><b>Tidal Cove Waterpark</b><p>This file preview isn’t running 3D JavaScript. To play on iPhone, host <strong>index.html</strong> on GitHub Pages or Vercel and open that website in Safari.</p><small>The standalone game needs WebGL but does not need to download Three.js or other libraries.</small></div></div>
+<div id="loader"><div class="loadingWave">🌊</div><h2>Opening Tidal Cove</h2><p id="loadtext">Starting self-contained 3D engine…</p></div>
+<header><div class="logo"><div class="logo-icon">≈</div><div><div class="brand">TIDAL COVE</div><div class="sub">MOBILE 3D WATERPARK</div></div></div><div class="topright"><div class="chip" id="guestBadge">☀ &nbsp; 38 visitors</div><div class="chip" id="modeBadge">✦ &nbsp; Explore freely</div></div></header>
+<div id="hero"><div id="eyebrow">WELCOME TO YOUR OWN SLICE OF SUMMER</div><h1>MAKE<br/><span>WAVES.</span></h1><p>One twisting waterslide. A wave pool. A whole park full of people. Go on — the water's perfect.</p></div>
+<div id="rightpanel"><button class="round on" id="waveToggle" title="Toggle wave machine">〰<small>WAVES</small></button><button class="round" id="sunToggle" title="Change lighting">☼<small>SUNSET</small></button><button class="round" id="resetBtn" title="Return to overview">⌂<small>VIEW</small></button></div>
+<div id="ridehud"><div class="rideSub">RIDING THE CURRENT</div><div class="rideTitle" id="speedText">HERE WE GO!</div><div class="meter"><div id="progress"></div></div></div>
+<div id="walkHelp">WASD to move · drag to look · tap attractions to visit</div>
+<div id="pad"><div id="padBase"></div><div id="stick"></div></div>
+<div id="bottom"><button class="action primary" id="exploreBtn"><span class="symbol">◉</span> Explore</button><button class="action" id="rideBtn"><span class="symbol">↝</span> Ride slide</button><button class="action" id="poolBtn"><span class="symbol">≋</span> Wave pool</button><button class="action" id="overviewBtn"><span class="symbol">◈</span> Overview</button></div>
+<div id="toast"></div><div id="footer">PROTOTYPE · THREE.JS · TOUCH + KEYBOARD</div>
+<script>
+(function(){
+'use strict';
+const $=(x)=>document.querySelector(x), $$=(x)=>[...document.querySelectorAll(x)];
+const loader=$('#loader'), loadtext=$('#loadtext');
+$('#staticFallback').remove();loader.style.display='flex';
+let finished=false;
+function fail(msg){console.error('Tidal Cove:',msg);loadtext.textContent='Unable to start 3D: '+msg+'. Open in Safari or Chrome rather than the in-app file preview.';loader.querySelector('h2').textContent='Browser preview blocked';loader.querySelector('.loadingWave').textContent='⚠️';document.documentElement.dataset.status='error';}
+window.addEventListener('error',e=>{if(!finished)fail((e.message||'JavaScript failed').slice(0,180))});
+try{start()}catch(e){fail(e.message||String(e))}
+function start(){
+const mobile=/iPhone|iPad|Android|Mobile/i.test(navigator.userAgent)||innerWidth<700;
+const canvas=document.createElement('canvas');canvas.setAttribute('aria-label','Interactive 3D waterpark');$('#scene').appendChild(canvas);
+const gl=canvas.getContext('webgl',{alpha:true,antialias:false,depth:true,preserveDrawingBuffer:false,powerPreference:'low-power'}) || canvas.getContext('experimental-webgl',{alpha:true,antialias:false,depth:true,powerPreference:'low-power'});
+if(!gl)throw Error('WebGL is unavailable in this browser view');
+canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fail('Graphics context was lost')},false);
+const vs=`attribute vec3 aPos;attribute vec3 aNormal;attribute vec3 aColor;attribute float aPart;
+uniform mat4 uViewProj;uniform vec3 uTranslate;uniform float uYaw,uScale,uTime,uAnim,uSwim,uWater,uAmplitude,uPerson;
+uniform vec3 uSkin,uSuit,uHair;
+varying vec3 vColor,vNormal,vWorld;varying float vWave;
+void main(){vec3 p=aPos;vec3 n=aNormal;
+if(uPerson>0.5){
+if(aPart>3.5){float sw=sin(uTime*6.0+uAnim)*0.53;float pivot=0.83;float ang=sw*(aPart<4.5?1.0:-1.0);float yy=p.y-pivot;float zz=p.z;p.y=pivot+yy*cos(ang)-zz*sin(ang);p.z=yy*sin(ang)+zz*cos(ang);}
+else if(aPart>0.5&&aPart<2.5){float sw=sin(uTime*6.0+uAnim)*0.48;float pivot=1.37;float ang=sw*(aPart<1.5?-1.0:1.0);float yy=p.y-pivot;float zz=p.z;p.y=pivot+yy*cos(ang)-zz*sin(ang);p.z=yy*sin(ang)+zz*cos(ang);}
+}
+if(uWater>0.5){float w=sin(p.z*1.15-uTime*2.25+p.x*.19)*.12+sin(p.x*.82+p.z*.55-uTime*2.0)*.095+sin(p.x*2.4-p.z*.33+uTime*2.6)*.045;p.y+=w*uAmplitude;vWave=w*uAmplitude;}else vWave=0.0;
+float c=cos(uYaw),s=sin(uYaw);vec3 world=vec3(p.x*c+p.z*s,p.y,-p.x*s+p.z*c)*uScale+uTranslate;
+vWorld=world;vNormal=vec3(n.x*c+n.z*s,n.y,-n.x*s+n.z*c);
+if(uPerson>0.5){vColor=aPart>5.5?uHair:(aPart>2.5&&aPart<3.5?uSuit:(aPart>0.5&&aPart<2.5?uSkin:(aPart>3.5?uSkin:uSuit)));}else vColor=aColor;
+gl_Position=uViewProj*vec4(world,1.0);
+}`;
+const fs=`precision mediump float;varying vec3 vColor,vNormal,vWorld;varying float vWave;
+uniform float uWater,uTime,uSunset;uniform vec3 uEye;
+void main(){vec3 col=vColor;vec3 l=normalize(vec3(-0.47,0.88,0.42));float diffuse=.53+.47*max(0.0,dot(normalize(vNormal),l));
+if(uWater>0.5){vec3 n=normalize(vec3(-.18*cos(vWorld.x*.9+uTime*2.2),1.0,-.23*cos(vWorld.z*1.15-uTime*2.25)));vec3 v=normalize(uEye-vWorld);float fres=pow(1.0-max(0.0,dot(n,v)),2.0);float spec=pow(max(0.0,dot(reflect(-l,n),v)),35.0);float glint=pow(max(0.0,sin(vWorld.x*2.9+vWorld.z*1.45-uTime*4.3)*sin(vWorld.z*3.1-uTime*3.0)),12.0);col=mix(vec3(.02,.40,.61),vec3(.10,.72,.72),.34+.17*sin(vWorld.x*.54+uTime));col+=vec3(.48,.89,.90)*glint*.46+vec3(1.0,.97,.80)*spec*.78;col=mix(col,vec3(.75,.95,.96),fres*.32);}else col*=diffuse;
+if(uSunset>0.5)col=mix(col,vec3(.95,.64,.50),.13);
+float fog=clamp((length(vWorld.xz-uEye.xz)-61.0)/110.0,0.0,.6);col=mix(col,vec3(.69,.88,.89),fog);
+gl_FragColor=vec4(col,1.0);}`;
+function compile(type,source){const sh=gl.createShader(type);gl.shaderSource(sh,source);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error('Graphics shader: '+gl.getShaderInfoLog(sh).slice(0,160));return sh}
+const prog=gl.createProgram();gl.attachShader(prog,compile(gl.VERTEX_SHADER,vs));gl.attachShader(prog,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw Error('Graphics linking failed');gl.useProgram(prog);
+const attrs=['aPos','aNormal','aColor','aPart'].map(x=>gl.getAttribLocation(prog,x));
+const U={};for(const k of ['ViewProj','Translate','Yaw','Scale','Time','Anim','Swim','Water','Amplitude','Person','Skin','Suit','Hair','Sunset','Eye'])U[k]=gl.getUniformLocation(prog,'u'+k);
+gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
+const B={verts:[],push(x,y,z,nx,ny,nz,color,part=0){this.verts.push(x,y,z,nx,ny,nz,...color,part)},tri(a,b,c,col,part=0){let ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2],vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2],nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx,len=Math.hypot(nx,ny,nz)||1;[a,b,c].forEach(p=>this.push(...p,nx/len,ny/len,nz/len,col,part))},quad(a,b,c,d,col,part=0){this.tri(a,b,c,col,part);this.tri(a,c,d,col,part)}};
+const rgb=h=>[(h>>16&255)/255,(h>>8&255)/255,(h&255)/255];
+const grass=rgb(0x80bb8b),sand=rgb(0xe9d7a5),deck=rgb(0xf5e6ce),white=rgb(0xfffdf2),aqua=rgb(0x27c7d3),aquaDark=rgb(0x088fac),tile=rgb(0x66c5d4),brown=rgb(0x927158),palmGreen=rgb(0x2e956d),pink=rgb(0xef7877),yellow=rgb(0xffc76a),glass=rgb(0x9eecf1);
+function box(g,x,y,z,w,h,d,c,part=0){let x0=x-w/2,x1=x+w/2,y0=y-h/2,y1=y+h/2,z0=z-d/2,z1=z+d/2;
+g.quad([x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1],c,part);g.quad([x0,y0,z1],[x1,y0,z1],[x1,y0,z0],[x0,y0,z0],c,part);
+g.quad([x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],c,part);g.quad([x1,y0,z1],[x0,y0,z1],[x0,y1,z1],[x1,y1,z1],c,part);
+g.quad([x0,y0,z1],[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],c,part);g.quad([x1,y0,z0],[x1,y0,z1],[x1,y1,z1],[x1,y1,z0],c,part)}
+function sphere(g,x,y,z,rx,ry,rz,c,part=0,nu=9,nv=6){for(let i=0;i<nv;i++){const a=Math.PI*i/nv,b=Math.PI*(i+1)/nv;for(let j=0;j<nu;j++){const p=2*Math.PI*j/nu,q=2*Math.PI*(j+1)/nu;function v(t,s){return [x+Math.sin(t)*Math.cos(s)*rx,y+Math.cos(t)*ry,z+Math.sin(t)*Math.sin(s)*rz]};g.quad(v(a,p),v(a,q),v(b,q),v(b,p),c,part)}}}
+function cylinder(g,x,y,z,r1,r2,h,col,n=9){for(let i=0;i<n;i++){const a=i/n*2*Math.PI,b=(i+1)/n*2*Math.PI;const p=[Math.cos(a),Math.sin(a)],q=[Math.cos(b),Math.sin(b)];g.quad([x+p[0]*r1,y+h/2,z+p[1]*r1],[x+q[0]*r1,y+h/2,z+q[1]*r1],[x+q[0]*r2,y-h/2,z+q[1]*r2],[x+p[0]*r2,y-h/2,z+p[1]*r2],col);g.tri([x,y+h/2,z],[x+p[0]*r1,y+h/2,z+p[1]*r1],[x+q[0]*r1,y+h/2,z+q[1]*r1],col)}}
+function poly(g,x,y,z,R,h,col,n=12){for(let i=0;i<n;i++){let a=2*Math.PI*i/n,b=2*Math.PI*(i+1)/n;g.tri([x,y+h,z],[x+R*Math.cos(a),y,z+R*Math.sin(a)],[x+R*Math.cos(b),y,z+R*Math.sin(b)],col)}}
+let seed=39271;const random=()=>((seed=(1664525*seed+1013904223)>>>0)/4294967296),rr=(a,b)=>a+(b-a)*random();
+const world={verts:[]};Object.setPrototypeOf(world,B);
+box(world,0,-.6,0,175,.8,145,grass);box(world,0,-.10,0,78,.24,53,deck);
+for(let x=-38;x<=38;x+=6)box(world,x,.026,0,.028,.01,52,rgb(0xddd2c0));
+for(let z=-26;z<=26;z+=5)box(world,0,.025,z,78,.01,.028,rgb(0xddd2c0));
+function basin(x,z,w,d,deep=1.3){box(world,x,-deep,z,w,.15,d,rgb(0x5fc6ce));for(let sign of [-1,1]){box(world,x+sign*(w/2),-.47,z,.38,1.2,d+.35,white);box(world,x,-.47,z+sign*(d/2),w+.35,1.2,.38,white)}box(world,x,.05,z-d/2,w+1,.12,.42,white);box(world,x,.05,z+d/2,w+1,.12,.42,white)}
+basin(13,2,30,19);basin(-5,11,9,7,1);
+// Grass, plants and tropical palms
+for(let i=0;i<48;i++){const x=i%2?rr(-49,-41):rr(40,50),z=rr(-37,37);sphere(world,x,.17,z,rr(.3,.9),.25,rr(.3,.8),i%3===0?rgb(0x459f63):rgb(0x4f9b69))}
+function palm(x,z,h){cylinder(world,x,h/2,z,.22,.38,h,brown,8);for(let i=0;i<7;i++){let a=2*Math.PI*i/7;let dx=Math.cos(a),dz=Math.sin(a);world.tri([x,h+.13,z],[x+dx*2.65,h+.30,z+dz*2.65],[x+dx*1.9-dz*.55,h-.29,z+dz*1.9+dx*.55],palmGreen);world.tri([x,h+.13,z],[x+dx*2.65,h+.30,z+dz*2.65],[x+dx*1.9+dz*.55,h-.29,z+dz*1.9-dx*.55],rgb(0x368e64))}}
+[[-35,-23],[-37,21],[-20,24],[3,-24],[35,-18],[36,18],[13,25],[-37,10],[-1,24]].forEach(([x,z])=>palm(x,z,rr(5,8)));
+// The slide: sampled trough with raised banks
+const slideNodes=[[-24,10.7,-17],[-19,10.2,-15],[-13,9.1,-14],[-14,8.0,-8],[-23,6.7,-5],[-24,5.7,1],[-17,4.8,4],[-10,3.2,3],[-6,1.5,8],[-5,.2,11]];
+function sample(t){const u=Math.min(.999999,Math.max(0,t))*(slideNodes.length-1),i=Math.floor(u),f=u-i, a=slideNodes[Math.max(0,i-1)],b=slideNodes[i],c=slideNodes[Math.min(slideNodes.length-1,i+1)],d=slideNodes[Math.min(slideNodes.length-1,i+2)];return [0,1,2].map(k=>.5*((2*b[k])+(-a[k]+c[k])*f+(2*a[k]-5*b[k]+4*c[k]-d[k])*f*f+(-a[k]+3*b[k]-3*c[k]+d[k])*f*f*f))}
+function channel(t,offset){let p=sample(t),a=sample(Math.max(0,t-.001)),b=sample(Math.min(1,t+.001)),dx=b[0]-a[0],dz=b[2]-a[2],l=Math.hypot(dx,dz)||1;return [p[0]+dz/l*Math.sin(offset)*1.17,p[1]+(1-Math.cos(offset))*.55,p[2]-dx/l*Math.sin(offset)*1.17]}
+const slideP=rgb(0x23d4d8);
+for(let i=0;i<140;i++)for(let j=0;j<9;j++){let t=i/140,u=(i+1)/140,a=-1.56+j*3.12/9,b=-1.56+(j+1)*3.12/9;let col=Math.abs(a)>1.06||Math.abs(b)>1.06?aquaDark:slideP;world.quad(channel(t,a),channel(t,b),channel(u,b),channel(u,a),col)}
+for(let i=0;i<136;i++){let p=channel(i/136,-1.56),q=channel((i+1)/136,-1.56),v=channel(i/136,1.56),w=channel((i+1)/136,1.56);box(world,p[0],p[1],p[2],.14,.10,.14,white);box(world,v[0],v[1],v[2],.14,.10,.14,white)}
+box(world,-24,10.35,-17.2,7,.36,6.3,white);for(let x of [-27,-21])for(let z of [-20,-14.5])cylinder(world,x,5,z,.20,.25,10,white);
+for(let i=0;i<34;i++){let yy=(i+1)*.30;box(world,-30.5,yy,-17+i*.68,2.5,.13,.5,white)}
+for(let t of [.20,.38,.56,.72,.87]){let p=sample(t);if(p[1]>1.4)cylinder(world,p[0],p[1]/2,p[2],.17,.20,p[1],white)}
+// Patio furniture & lifeguards
+function umbrella(x,z,col){cylinder(world,x,1.3,z,.075,.085,2.6,white);poly(world,x,2.5,z,2.22,.74,col)}
+function chair(x,z,a){box(world,x,.33,z,1.0,.18,2.16,white);box(world,x+Math.sin(a)*.5,.82,z+Math.cos(a)*.5,1.1,.12,1.15,yellow)}
+for(let [x,z,c] of [[26,21,pink],[15,21,yellow],[-17,18,aqua],[-32,19,pink]]){umbrella(x,z,c);chair(x-2,z+1,0);chair(x+2,z+1,0)}
+function lifeguard(x,z){for(let s of [-1,1])for(let t of [-1,1])cylinder(world,x+s*.5,1.13,z+t*.5,.09,.09,2.26,white);box(world,x,2.3,z,1.5,.2,1.5,pink);box(world,x,3,z-.55,1.45,1.14,.20,white)}lifeguard(32,14);lifeguard(-10,15);
+box(world,26,1.95,-19,8,3.9,6,white);box(world,26,4,-19,9,.4,6.8,aqua);box(world,26,2,-15.92,5,1.2,.12,rgb(0x239aad));
+box(world,26,3.38,-15.77,5.5,.69,.13,pink);box(world,26,2.37,-15.8,4.9,.11,.1,yellow);
+const wave={verts:[]};Object.setPrototypeOf(wave,B);
+function waterplane(g,x,z,w,d,nx,nz){for(let i=0;i<nx;i++)for(let j=0;j<nz;j++){let x0=x-w/2+i*w/nx,x1=x-w/2+(i+1)*w/nx,z0=z-d/2+j*d/nz,z1=z-d/2+(j+1)*d/nz;g.quad([x0,.20,z0],[x1,.20,z0],[x1,.20,z1],[x0,.20,z1],rgb(0x06a4c1))}}
+waterplane(wave,13,2,29.5,18.5,35,24);waterplane(wave,-5,11,8.6,6.7,16,12);
+const person={verts:[]};Object.setPrototypeOf(person,B);
+// Part ids: 0 torso/suit, 1 & 2 arms/skin, 3 suit, 4 & 5 legs/skin, 6 hair
+sphere(person,0,1.14,0,.26,.34,.15,white,0,9,6);
+box(person,0,.86,0,.53,.32,.32,white,3);sphere(person,0,1.69,0,.168,.21,.16,white,1,10,7);
+sphere(person,0,1.82,-.055,.18,.1,.19,white,6,9,4);
+sphere(person,-.32,1.17,0,.095,.29,.09,white,1,7,5);sphere(person,.32,1.17,0,.095,.29,.09,white,2,7,5);
+sphere(person,-.15,.55,0,.12,.33,.11,white,4,7,5);sphere(person,.15,.55,0,.12,.33,.11,white,5,7,5);
+const faces=[0xffdbb5,0xc38867,0x805b43,0xe8a679,0xf2bb92,0xb46e4d].map(rgb),hair=[0x28242c,0x6c4634,0xc79d66,0x332f41].map(rgb),swimsuits=[0xfc746d,0x51b6b4,0xe4aa60,0x7766bb,0x66a96b,0x1c728a].map(rgb);
+const paths=[[-33,-21,-14,-21],[5,-17,17,-17],[33,-14,33,14],[24,17,6,17],[-17,20,-31,20],[-11,-13,-11,17],[-3,20,4,15],[-35,0,-35,-19]];
+const walkers=[],swimmers=[];
+for(let i=0;i<24;i++){let p=paths[i%paths.length],t=random();walkers.push({x:p[0]*(1-t)+p[2]*t,z:p[1]*(1-t)+p[3]*t,a:[p[0],p[1]],b:[p[2],p[3]],t,dir:random()>.5?1:-1,speed:rr(.018,.045),phase:rr(0,6),scale:rr(.88,1.13),skin:faces[i%faces.length],hair:hair[i%hair.length],suit:swimsuits[i%swimsuits.length]})}
+for(let i=0;i<14;i++)swimmers.push({x:rr(.8,25),z:rr(-5.8,10),baseX:0,baseZ:0,phase:rr(0,6),speed:rr(.15,.45),scale:rr(.88,1.1),skin:faces[i%faces.length],hair:hair[i%hair.length],suit:swimsuits[i%swimsuits.length]});
+const batches=[world,wave,person].map(mesh=>{const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(mesh.verts),gl.STATIC_DRAW);return {buffer,count:mesh.verts.length/10}});
+function draw(batch,o){gl.bindBuffer(gl.ARRAY_BUFFER,batch.buffer);const stride=40;for(let i=0;i<4;i++){if(attrs[i]<0)continue;gl.enableVertexAttribArray(attrs[i]);gl.vertexAttribPointer(attrs[i],i===3?1:3,gl.FLOAT,false,stride,[0,12,24,36][i])}
+gl.uniform3fv(U.Translate,o.position||[0,0,0]);gl.uniform1f(U.Yaw,o.yaw||0);gl.uniform1f(U.Scale,o.scale||1);gl.uniform1f(U.Anim,o.phase||0);gl.uniform1f(U.Swim,o.swim?1:0);gl.uniform1f(U.Water,o.water?1:0);gl.uniform1f(U.Amplitude,o.amplitude||1);gl.uniform1f(U.Person,o.person?1:0);
+if(o.person){gl.uniform3fv(U.Skin,o.skin);gl.uniform3fv(U.Suit,o.suit);gl.uniform3fv(U.Hair,o.hair)}gl.drawArrays(gl.TRIANGLES,0,batch.count)}
+// Math: column-major matrices
+const norm=v=>{let l=Math.hypot(...v)||1;return v.map(x=>x/l)}, sub=(a,b)=>a.map((x,i)=>x-b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);
+function view(eye,target){const f=norm(sub(target,eye)),r=norm(cross(f,[0,1,0])),u=cross(r,f);return [r[0],u[0],-f[0],0,r[1],u[1],-f[1],0,r[2],u[2],-f[2],0,-dot(r,eye),-dot(u,eye),dot(f,eye),1]}
+function perspective(fov,aspect,near,far){let f=1/Math.tan(fov/2),nf=1/(near-far);return [f/aspect,0,0,0,0,f,0,0,0,0,(far+near)*nf,-1,0,0,2*far*near*nf,0]}
+function multiply(a,b){let out=new Array(16).fill(0);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)out[c*4+r]+=a[k*4+r]*b[c*4+k];return out}
+let mode='overview',clock=performance.now(),elapsed=0,orbit=.65,elev=.53,zoom=mobile?66:57,yaw=.35,pitch=.1,rideProgress=0,wavesOn=true,sunset=false,playing=true;
+const player={x:1,y:0,z:18},keys={},touchMove={x:0,z:0};const ui=$('#modeBadge');
+function toast(txt){$('#toast').textContent=txt;$('#toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').classList.remove('show'),2400)}
+function change(v){mode=v;document.body.classList.toggle('playing',v!=='overview');document.body.classList.toggle('moving',v==='walk'||v==='swim');document.body.classList.toggle('riding',v==='ride');
+ui.innerHTML=v==='overview'?'✦ &nbsp; Explore freely':v==='ride'?'↝ &nbsp; On the slide':v==='swim'?'≋ &nbsp; Wave pool':'◉ &nbsp; Walking around';$$('.action').forEach(x=>x.classList.remove('primary'));$('#'+({overview:'overviewBtn',walk:'exploreBtn',swim:'poolBtn',ride:'rideBtn'}[v])).classList.add('primary')}
+function startRide(){rideProgress=0;change('ride');toast('Here we go! 🌊')}
+function startPool(){player.x=9;player.z=6;change('swim');toast('Swim with the waves!')}
+function startWalk(){if(mode==='overview'){player.x=1;player.z=18}change('walk');toast('Use the touch joystick to walk')}
+function reset(){change('overview')}
+$('#rideBtn').onclick=startRide;$('#exploreBtn').onclick=startWalk;$('#poolBtn').onclick=startPool;$('#overviewBtn').onclick=reset;$('#resetBtn').onclick=reset;
+$('#waveToggle').onclick=()=>{wavesOn=!wavesOn;$('#waveToggle').classList.toggle('on',wavesOn);toast(wavesOn?'Wave machine ON 🌊':'Wave machine OFF')};
+$('#sunToggle').onclick=()=>{sunset=!sunset;$('#sunToggle').classList.toggle('on',sunset);toast(sunset?'Sunset lighting':'Sunny day')};
+window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(e.key==='1')startWalk();if(e.key==='2')startRide();if(e.key==='3')startPool()});window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+let dragging=false,dragX=0,dragY=0;
+canvas.addEventListener('pointerdown',e=>{dragging=true;dragX=e.clientX;dragY=e.clientY;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!dragging)return;let dx=e.clientX-dragX,dy=e.clientY-dragY;dragX=e.clientX;dragY=e.clientY;if(mode==='overview'){orbit-=dx*.005;elev=Math.min(1.1,Math.max(.16,elev+dy*.0035))}else if(mode!=='ride'){yaw-=dx*.008;pitch=Math.max(-.4,Math.min(.6,pitch+dy*.005))}});canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
+canvas.addEventListener('wheel',e=>{zoom=Math.max(26,Math.min(110,zoom+e.deltaY*.04))},{passive:true});
+const pad=$('#pad'),stick=$('#stick');let padID=null;
+function stickMove(e){let b=pad.getBoundingClientRect(),x=e.clientX-b.left-b.width/2,y=e.clientY-b.top-b.height/2,l=Math.hypot(x,y),limit=b.width*.3;if(l>limit){x=x/l*limit;y=y/l*limit}touchMove.x=x/limit;touchMove.z=-y/limit;stick.style.transform=`translate(${x}px,${y}px)`}
+pad.addEventListener('pointerdown',e=>{e.preventDefault();padID=e.pointerId;pad.setPointerCapture(e.pointerId);stickMove(e)});
+pad.addEventListener('pointermove',e=>{if(padID===e.pointerId)stickMove(e)});function stop(){padID=null;touchMove.x=touchMove.z=0;stick.style.transform='translate(0,0)'}pad.addEventListener('pointerup',stop);pad.addEventListener('pointercancel',stop);
+function resize(){let dpr=Math.min(devicePixelRatio||1,mobile?1.25:1.6),w=Math.max(1,Math.round(innerWidth*dpr)),h=Math.max(1,Math.round(innerHeight*dpr));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;canvas.style.width='100%';canvas.style.height='100%'}gl.viewport(0,0,w,h)}window.addEventListener('resize',resize);resize();
+function tick(now){if(!playing)return;requestAnimationFrame(tick);let dt=Math.min(.06,(now-clock)/1000||.016);clock=now;elapsed+=dt;
+if(mode==='ride'){rideProgress=Math.min(1,rideProgress+dt*(.071+rideProgress*.09));$('#progress').style.width=Math.round(rideProgress*100)+'%';$('#speedText').textContent=rideProgress<.2?'HERE WE GO!':rideProgress<.83?'WHEEEEE!':'SPLASHDOWN!';if(rideProgress>=1){startPool();toast('SPLASH! 🎉')}}
+for(const w of walkers){w.t+=dt*w.speed*w.dir;if(w.t>=1||w.t<=0){w.t=Math.max(0,Math.min(1,w.t));w.dir*=-1}w.x=w.a[0]+(w.b[0]-w.a[0])*w.t;w.z=w.a[1]+(w.b[1]-w.a[1])*w.t}
+if(mode==='walk'||mode==='swim'){let x=touchMove.x+(keys['a']||keys['arrowleft']?-1:0)+(keys['d']||keys['arrowright']?1:0),z=touchMove.z+(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0);let l=Math.hypot(x,z);if(l>.05){x/=Math.max(1,l);z/=Math.max(1,l);let sp=mode==='walk'?5.6:2.5;player.x+=dt*sp*(Math.cos(yaw)*x+Math.sin(yaw)*z);player.z+=dt*sp*(Math.cos(yaw)*z-Math.sin(yaw)*x);player.x=Math.max(mode==='walk'?-36:0,Math.min(mode==='walk'?36:26,player.x));player.z=Math.max(mode==='walk'?-24:-6,Math.min(mode==='walk'?24:10,player.z))}}
+let eye,target;
+if(mode==='overview'){orbit+=dt*.028;eye=[Math.sin(orbit)*Math.cos(elev)*zoom,3+Math.sin(elev)*zoom,Math.cos(orbit)*Math.cos(elev)*zoom];target=[-1.5,2,0]}
+else if(mode==='ride'){let p=sample(rideProgress),q=sample(Math.min(.999,rideProgress+.012));eye=[p[0],p[1]+1.0,p[2]];target=[q[0],q[1]+.6,q[2]]}
+else{eye=[player.x-Math.sin(yaw)*6.4,3.7+pitch*5,player.z-Math.cos(yaw)*6.4];target=[player.x,mode==='swim'?.9:1.25,player.z]}
+const vp=multiply(perspective((mobile?66:59)*Math.PI/180,canvas.width/canvas.height,.09,310),view(eye,target));
+gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(prog);gl.uniformMatrix4fv(U.ViewProj,false,new Float32Array(vp));gl.uniform1f(U.Time,elapsed);gl.uniform1f(U.Sunset,sunset?1:0);gl.uniform3fv(U.Eye,eye);gl.uniform3fv(U.Skin,[1,.7,.5]);gl.uniform3fv(U.Suit,[.6,.4,.8]);gl.uniform3fv(U.Hair,[.2,.2,.2]);
+draw(batches[0],{});draw(batches[1],{water:true,amplitude:wavesOn?1:.14});
+for(let i=0;i<walkers.length;i++){let w=walkers[i];const angle=Math.atan2((w.b[0]-w.a[0])*w.dir,(w.b[1]-w.a[1])*w.dir);draw(batches[2],{person:true,position:[w.x,.12,w.z],yaw:angle,scale:w.scale,phase:w.phase,skin:w.skin,suit:w.suit,hair:w.hair})}
+for(let w of swimmers){draw(batches[2],{person:true,position:[w.x+Math.sin(elapsed*w.speed+w.phase)*.8,-.58+Math.sin(elapsed*1.8+w.phase)*.1*(wavesOn?1:.2),w.z+Math.cos(elapsed*w.speed+w.phase)*.8],yaw:Math.sin(elapsed*.2+w.phase),scale:w.scale,phase:w.phase,skin:w.skin,suit:w.suit,hair:w.hair})}
+if(mode==='walk'||mode==='swim')draw(batches[2],{person:true,position:[player.x,mode==='swim'?-.58:.10,player.z],yaw:yaw,phase:0,skin:faces[0],suit:swimsuits[1],hair:hair[1]})
+}
+change('overview');requestAnimationFrame(tick);finished=true;document.documentElement.dataset.status='ready';$('#footer').textContent='MOBILE EDITION · STANDALONE WEBGL · NO EXTERNAL DOWNLOADS';loader.style.opacity='0';setTimeout(()=>loader.remove(),750);
+}
+})();
+</script>
+</body></html>
