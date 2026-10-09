@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <meta name="theme-color" content="#0e3457"/>
-<title>Tidal Cove — Mobile Waterpark</title>
+<title>Tidal Cove — Mobile Waterpark v2</title>
 <style>
 :root{--ink:#073c53;--cream:#f7f5e9;--aqua:#00d8cf;--coral:#fb765d}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,#8ac8ee 0%,#dcf8f1 82%,#95cdd2 100%);color:white;font-family:Outfit,'Arial',sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -27,16 +27,16 @@ header{position:fixed;top:0;left:0;right:0;padding:clamp(16px,3vw,28px) clamp(18
 </head>
 <body>
 <div id="app"><div id="scene"></div><div id="vignette"></div></div>
-<div id="staticFallback"><div class="fallbackCard"><div style="font-size:50px">🌊</div><b>Tidal Cove Waterpark</b><p>This file preview isn’t running 3D JavaScript. To play on iPhone, host <strong>index.html</strong> on GitHub Pages or Vercel and open that website in Safari.</p><small>The standalone game needs WebGL but does not need to download Three.js or other libraries.</small></div></div>
+<div id="staticFallback"><div class="fallbackCard"><div style="font-size:50px">🌊</div><b>Tidal Cove Waterpark</b><p>This file preview isn’t running 3D JavaScript. To play on iPhone, host <strong>index.html</strong> on GitHub Pages or Vercel and open that website in Safari.</p><small>The game uses standalone WebGL and requires graphics support.</small></div></div>
 <div id="loader"><div class="loadingWave">🌊</div><h2>Opening Tidal Cove</h2><p id="loadtext">Starting self-contained 3D engine…</p></div>
-<header><div class="logo"><div class="logo-icon">≈</div><div><div class="brand">TIDAL COVE</div><div class="sub">MOBILE 3D WATERPARK</div></div></div><div class="topright"><div class="chip" id="guestBadge">☀ &nbsp; 38 visitors</div><div class="chip" id="modeBadge">✦ &nbsp; Explore freely</div></div></header>
+<header><div class="logo"><div class="logo-icon">≈</div><div><div class="brand">TIDAL COVE</div><div class="sub">MOBILE 3D WATERPARK · v2</div></div></div><div class="topright"><div class="chip" id="guestBadge">☀ &nbsp; 38 visitors</div><div class="chip" id="modeBadge">✦ &nbsp; Explore freely</div></div></header>
 <div id="hero"><div id="eyebrow">WELCOME TO YOUR OWN SLICE OF SUMMER</div><h1>MAKE<br/><span>WAVES.</span></h1><p>One twisting waterslide. A wave pool. A whole park full of people. Go on — the water's perfect.</p></div>
 <div id="rightpanel"><button class="round on" id="waveToggle" title="Toggle wave machine">〰<small>WAVES</small></button><button class="round" id="sunToggle" title="Change lighting">☼<small>SUNSET</small></button><button class="round" id="resetBtn" title="Return to overview">⌂<small>VIEW</small></button></div>
 <div id="ridehud"><div class="rideSub">RIDING THE CURRENT</div><div class="rideTitle" id="speedText">HERE WE GO!</div><div class="meter"><div id="progress"></div></div></div>
 <div id="walkHelp">WASD to move · drag to look · tap attractions to visit</div>
 <div id="pad"><div id="padBase"></div><div id="stick"></div></div>
 <div id="bottom"><button class="action primary" id="exploreBtn"><span class="symbol">◉</span> Explore</button><button class="action" id="rideBtn"><span class="symbol">↝</span> Ride slide</button><button class="action" id="poolBtn"><span class="symbol">≋</span> Wave pool</button><button class="action" id="overviewBtn"><span class="symbol">◈</span> Overview</button></div>
-<div id="toast"></div><div id="footer">PROTOTYPE · THREE.JS · TOUCH + KEYBOARD</div>
+<div id="toast"></div><div id="footer">PROTOTYPE v2 · STANDALONE WEBGL · TOUCH + KEYBOARD</div>
 <script>
 (function(){
 'use strict';
@@ -44,7 +44,7 @@ const $=(x)=>document.querySelector(x), $$=(x)=>[...document.querySelectorAll(x)
 const loader=$('#loader'), loadtext=$('#loadtext');
 $('#staticFallback').remove();loader.style.display='flex';
 let finished=false;
-function fail(msg){console.error('Tidal Cove:',msg);loadtext.textContent='Unable to start 3D: '+msg+'. Open in Safari or Chrome rather than the in-app file preview.';loader.querySelector('h2').textContent='Browser preview blocked';loader.querySelector('.loadingWave').textContent='⚠️';document.documentElement.dataset.status='error';}
+function fail(msg){console.error('Tidal Cove:',msg);loadtext.textContent='3D initialization error: '+msg+' — Please share a screenshot of this error if it persists.';loader.querySelector('h2').textContent='Graphics startup error';loader.querySelector('.loadingWave').textContent='⚠️';document.documentElement.dataset.status='error';}
 window.addEventListener('error',e=>{if(!finished)fail((e.message||'JavaScript failed').slice(0,180))});
 try{start()}catch(e){fail(e.message||String(e))}
 function start(){
@@ -54,29 +54,29 @@ const gl=canvas.getContext('webgl',{alpha:true,antialias:false,depth:true,preser
 if(!gl)throw Error('WebGL is unavailable in this browser view');
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fail('Graphics context was lost')},false);
 const vs=`attribute vec3 aPos;attribute vec3 aNormal;attribute vec3 aColor;attribute float aPart;
-uniform mat4 uViewProj;uniform vec3 uTranslate;uniform float uYaw,uScale,uTime,uAnim,uSwim,uWater,uAmplitude,uPerson;
+uniform mat4 uViewProj;uniform vec3 uTranslate;uniform highp float uYaw,uScale,uAnim,uSwim,uAmplitude,uPerson;uniform mediump float uTime,uWater;
 uniform vec3 uSkin,uSuit,uHair;
-varying vec3 vColor,vNormal,vWorld;varying float vWave;
+varying mediump vec3 vColor,vNormal,vWorld;
 void main(){vec3 p=aPos;vec3 n=aNormal;
 if(uPerson>0.5){
 if(aPart>3.5){float sw=sin(uTime*6.0+uAnim)*0.53;float pivot=0.83;float ang=sw*(aPart<4.5?1.0:-1.0);float yy=p.y-pivot;float zz=p.z;p.y=pivot+yy*cos(ang)-zz*sin(ang);p.z=yy*sin(ang)+zz*cos(ang);}
 else if(aPart>0.5&&aPart<2.5){float sw=sin(uTime*6.0+uAnim)*0.48;float pivot=1.37;float ang=sw*(aPart<1.5?-1.0:1.0);float yy=p.y-pivot;float zz=p.z;p.y=pivot+yy*cos(ang)-zz*sin(ang);p.z=yy*sin(ang)+zz*cos(ang);}
 }
-if(uWater>0.5){float w=sin(p.z*1.15-uTime*2.25+p.x*.19)*.12+sin(p.x*.82+p.z*.55-uTime*2.0)*.095+sin(p.x*2.4-p.z*.33+uTime*2.6)*.045;p.y+=w*uAmplitude;vWave=w*uAmplitude;}else vWave=0.0;
+if(uWater>0.5){float w=sin(p.z*1.15-uTime*2.25+p.x*.19)*.12+sin(p.x*.82+p.z*.55-uTime*2.0)*.095+sin(p.x*2.4-p.z*.33+uTime*2.6)*.045;p.y+=w*uAmplitude;}
 float c=cos(uYaw),s=sin(uYaw);vec3 world=vec3(p.x*c+p.z*s,p.y,-p.x*s+p.z*c)*uScale+uTranslate;
 vWorld=world;vNormal=vec3(n.x*c+n.z*s,n.y,-n.x*s+n.z*c);
 if(uPerson>0.5){vColor=aPart>5.5?uHair:(aPart>2.5&&aPart<3.5?uSuit:(aPart>0.5&&aPart<2.5?uSkin:(aPart>3.5?uSkin:uSuit)));}else vColor=aColor;
 gl_Position=uViewProj*vec4(world,1.0);
 }`;
-const fs=`precision mediump float;varying vec3 vColor,vNormal,vWorld;varying float vWave;
-uniform float uWater,uTime,uSunset;uniform vec3 uEye;
+const fs=`precision mediump float;varying mediump vec3 vColor,vNormal,vWorld;
+uniform mediump float uWater,uTime,uSunset;uniform vec3 uEye;
 void main(){vec3 col=vColor;vec3 l=normalize(vec3(-0.47,0.88,0.42));float diffuse=.53+.47*max(0.0,dot(normalize(vNormal),l));
 if(uWater>0.5){vec3 n=normalize(vec3(-.18*cos(vWorld.x*.9+uTime*2.2),1.0,-.23*cos(vWorld.z*1.15-uTime*2.25)));vec3 v=normalize(uEye-vWorld);float fres=pow(1.0-max(0.0,dot(n,v)),2.0);float spec=pow(max(0.0,dot(reflect(-l,n),v)),35.0);float glint=pow(max(0.0,sin(vWorld.x*2.9+vWorld.z*1.45-uTime*4.3)*sin(vWorld.z*3.1-uTime*3.0)),12.0);col=mix(vec3(.02,.40,.61),vec3(.10,.72,.72),.34+.17*sin(vWorld.x*.54+uTime));col+=vec3(.48,.89,.90)*glint*.46+vec3(1.0,.97,.80)*spec*.78;col=mix(col,vec3(.75,.95,.96),fres*.32);}else col*=diffuse;
 if(uSunset>0.5)col=mix(col,vec3(.95,.64,.50),.13);
 float fog=clamp((length(vWorld.xz-uEye.xz)-61.0)/110.0,0.0,.6);col=mix(col,vec3(.69,.88,.89),fog);
 gl_FragColor=vec4(col,1.0);}`;
 function compile(type,source){const sh=gl.createShader(type);gl.shaderSource(sh,source);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error('Graphics shader: '+gl.getShaderInfoLog(sh).slice(0,160));return sh}
-const prog=gl.createProgram();gl.attachShader(prog,compile(gl.VERTEX_SHADER,vs));gl.attachShader(prog,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw Error('Graphics linking failed');gl.useProgram(prog);
+const prog=gl.createProgram();gl.attachShader(prog,compile(gl.VERTEX_SHADER,vs));gl.attachShader(prog,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw Error('Shader linking: '+(gl.getProgramInfoLog(prog)||'Unknown graphics driver error').slice(0,550));gl.useProgram(prog);
 const attrs=['aPos','aNormal','aColor','aPart'].map(x=>gl.getAttribLocation(prog,x));
 const U={};for(const k of ['ViewProj','Translate','Yaw','Scale','Time','Anim','Swim','Water','Amplitude','Person','Skin','Suit','Hair','Sunset','Eye'])U[k]=gl.getUniformLocation(prog,'u'+k);
 gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
@@ -179,7 +179,7 @@ for(let i=0;i<walkers.length;i++){let w=walkers[i];const angle=Math.atan2((w.b[0
 for(let w of swimmers){draw(batches[2],{person:true,position:[w.x+Math.sin(elapsed*w.speed+w.phase)*.8,-.58+Math.sin(elapsed*1.8+w.phase)*.1*(wavesOn?1:.2),w.z+Math.cos(elapsed*w.speed+w.phase)*.8],yaw:Math.sin(elapsed*.2+w.phase),scale:w.scale,phase:w.phase,skin:w.skin,suit:w.suit,hair:w.hair})}
 if(mode==='walk'||mode==='swim')draw(batches[2],{person:true,position:[player.x,mode==='swim'?-.58:.10,player.z],yaw:yaw,phase:0,skin:faces[0],suit:swimsuits[1],hair:hair[1]})
 }
-change('overview');requestAnimationFrame(tick);finished=true;document.documentElement.dataset.status='ready';$('#footer').textContent='MOBILE EDITION · STANDALONE WEBGL · NO EXTERNAL DOWNLOADS';loader.style.opacity='0';setTimeout(()=>loader.remove(),750);
+change('overview');requestAnimationFrame(tick);finished=true;document.documentElement.dataset.status='ready';$('#footer').textContent='v2 · STANDALONE WEBGL · MATCHED SHADER PRECISION';loader.style.opacity='0';setTimeout(()=>loader.remove(),750);
 }
 })();
 </script>
